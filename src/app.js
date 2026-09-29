@@ -1,8 +1,11 @@
 import express from "express";
 import registerRoutes from "#core";
+import { requestLogger } from "./middleware/requestLogger.js";
 
 const app = express();
 
+// request logger middleware
+app.use(requestLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
