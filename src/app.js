@@ -1,4 +1,5 @@
 import express from "express";
+import registerRoutes from "#core";
 
 const app = express();
 
@@ -12,5 +13,8 @@ app.get("/api/health", (req, res) => {
     status: "ok",
   });
 });
+
+// register routes
+registerRoutes(app);
 
 export default app;

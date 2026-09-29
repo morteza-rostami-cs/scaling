@@ -3,14 +3,18 @@
   "type": "module",
   "imports": {
     "#config/*": "./src/config/*",
-    "#src/*": "./src/*"
+    "#src/*": "./src/*",
+    "#core": "./src/core/index.js",
+    "#core/*": "./src/core/*"
   },
   "version": "1.0.0",
   "description": "this a scalable node js backend.",
   "main": "src/server.js",
   "scripts": {
     "dev": "node --watch --env-file=.env src/server.js",
-    "start": "node --env.file=.env src/server.js",
+    "start": "node --env-file=.env src/server.js",
+    "db:migrate": "node --env-file=.env src/db/schema.js",
+    "db:test:users": "node --env-file=.env src/db/users.js",
     "tree": "tree -a -I 'node_modules|_notes|.git'"
   },
   "keywords": [
