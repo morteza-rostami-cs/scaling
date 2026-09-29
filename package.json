@@ -1,19 +1,25 @@
 {
   "name": "scale",
+  "type": "module",
+  "imports": {
+    "#config/*": "./src/config/*",
+    "#src/*": "./src/*"
+  },
   "version": "1.0.0",
   "description": "this a scalable node js backend.",
   "main": "src/server.js",
   "scripts": {
     "dev": "node --watch --env-file=.env src/server.js",
-    "start": "node --env.file=.env src/server.js"
+    "start": "node --env.file=.env src/server.js",
+    "tree": "tree -a -I 'node_modules|_notes|.git'"
   },
   "keywords": [
     "node"
   ],
   "author": "morteza",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "pg": "^8.23.0"
   }
 }
