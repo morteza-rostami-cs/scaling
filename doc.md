@@ -1,0 +1,6 @@
+```bash
+
+npm init -y
+
+
+```

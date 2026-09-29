@@ -1,0 +1,13 @@
+{
+  "name": "scale",
+  "version": "1.0.0",
+  "description": "this a scalable node js backend.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch --env-file=.env src/server.js"
+  },
+  "keywords": ["node"],
+  "author": "morteza",
+  "license": "ISC",
+  "type": "module"
+}
