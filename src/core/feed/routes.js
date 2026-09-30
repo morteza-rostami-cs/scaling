@@ -10,6 +10,14 @@ function registerFeedRoutes(app, repository) {
     return res.json({ posts });
   });
 
+  router.post("/rebuild", requireAuth, async (req, res) => {
+    const feed = await repository.rebuildFeed(req.user.id);
+
+    return res.json({
+      feed,
+    });
+  });
+
   app.use("/api/feed", router);
 }
 
