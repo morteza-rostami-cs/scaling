@@ -7,6 +7,7 @@ import CommentRepository from "./comments/repository.js";
 import SessionRepository from "./sessions/repository.js";
 import FollowRepository from "./follows/repository.js";
 import NotificationRepository from "./notifications/repository.js";
+import FeedRepository from "./feed/repository.js";
 
 // routes
 import registerUserRoutes from "./users/routes.js";
@@ -15,6 +16,7 @@ import registerCommentRoutes from "./comments/routes.js";
 import registerAuthRoutes from "./auth/routes.js";
 import registerFollowRoutes from "./follows/routes.js";
 import registerNotificationRoutes from "./notifications/routes.js";
+import registerFeedRoutes from "./feed/routes.js";
 
 // register repositories
 export const userRepository = new UserRepository(db);
@@ -23,6 +25,7 @@ const postRepository = new PostRepository(db);
 const commentRepository = new CommentRepository(db);
 const followRepository = new FollowRepository(db);
 const notificationRepository = new NotificationRepository(db);
+const feedRepository = new FeedRepository(db);
 
 function registerRoutes(app) {
   // register routes
@@ -32,6 +35,7 @@ function registerRoutes(app) {
   registerCommentRoutes(app, commentRepository);
   registerFollowRoutes(app, followRepository);
   registerNotificationRoutes(app, notificationRepository);
+  registerFeedRoutes(app, feedRepository);
 }
 
 export default registerRoutes;
