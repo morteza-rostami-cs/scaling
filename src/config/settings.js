@@ -8,6 +8,7 @@ class Settings {
     this.nodeEnv = env.NODE_ENV;
     this.port = Number(env.PORT);
     this.dbUrl = env.DATABASE_URL;
+    this.passwordHashLen = Number(env.PASSWORD_HASH_LEN);
 
     this.db = {
       host: env.DB_HOST,

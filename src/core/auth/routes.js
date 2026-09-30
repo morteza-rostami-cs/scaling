@@ -32,7 +32,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     // hash password
     const passwordHash = await bcrypt.hash(
       password,
-      12, // length of the salt being generated
+      settings.passwordHashLen, // length of the salt being generated
     );
 
     // create user
