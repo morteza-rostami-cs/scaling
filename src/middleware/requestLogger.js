@@ -18,16 +18,18 @@ export function requestLogger(req, res, next) {
     const durationMs = Number(process.hrtime.bigint() - start) / 1e6;
     const status = res.statusCode;
 
-    const statusEmoji =
-      status >= 500
-        ? "💥"
-        : status >= 400
-          ? "❌"
-          : status >= 300
-            ? "↪️"
-            : status >= 200
-              ? "✅"
-              : "❔";
+    let statusEmoji;
+    if (status >= 500) {
+      statusEmoji = "💥";
+    } else if (status >= 400) {
+      statusEmoji = "❌";
+    } else if (status >= 300) {
+      statusEmoji = "↪️";
+    } else if (status >= 200) {
+      statusEmoji = "✅";
+    } else {
+      statusEmoji = "❔";
+    }
 
     const time = new Date().toISOString();
     const ip = req.ip ?? req.socket?.remoteAddress ?? "-";

@@ -2,8 +2,9 @@ import express from "express";
 import registerRoutes from "#core";
 import { requestLogger } from "./middleware/requestLogger.js";
 import cookieParser from "cookie-parser";
+import { errorHandler } from "./middleware/errorHandler.js";
 
-import { printRoutes } from "#src/utils/printRoutes.js";
+// import { printRoutes } from "#src/utils/printRoutes.js";
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.get("/api/health", (req, res) => {
 // register routes
 registerRoutes(app);
 
-// printRoutes(app);
+// global error handler (should come after all routes)
+// all routes pass errors here
+app.use(errorHandler);
 
 export default app;
