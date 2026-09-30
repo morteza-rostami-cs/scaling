@@ -1,11 +1,14 @@
 import express from "express";
+import { requireAuth } from "#src/middleware/auth.js";
 
 const router = express.Router();
 
 function registerCommentRoutes(app, repository) {
   // POST /api/posts/:postId/comments
-  router.post("/posts/:postId/comments", async (req, res) => {
-    const { userId, content } = req.body;
+  router.post("/posts/:postId/comments", requireAuth, async (req, res) => {
+    const { content } = req.body;
+
+    const userId = req.user.id;
 
     const comment = await repository.createComment(
       req.params.postId,
@@ -24,8 +27,9 @@ function registerCommentRoutes(app, repository) {
   });
 
   // DELETE /api/comments/:id
-  router.delete("/comments/:id", async (req, res) => {
-    const comment = await repository.deleteComment(req.params.id);
+  router.delete("/comments/:id", requireAuth, async (req, res) => {
+    const commentId = req.params.id;
+    const comment = await repository.findById(commentId);
 
     if (!comment) {
       return res.status(404).json({
@@ -33,7 +37,16 @@ function registerCommentRoutes(app, repository) {
       });
     }
 
-    return res.json({ comment });
+    // user can only delete their own comment
+    if (req.user.id !== comment.user_id) {
+      return res.status(401).json({
+        error: "unauthorized",
+      });
+    }
+
+    const deletedComment = await repository.deleteComment(commentId);
+
+    return res.json({ comment: deletedComment });
   });
 
   app.use("/api", router);

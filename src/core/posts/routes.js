@@ -1,11 +1,14 @@
 import express from "express";
+import { requireAuth } from "#src/middleware/auth.js";
 
 const router = express.Router();
 
 function registerPostRoutes(app, repository) {
   // POST /api/posts
-  router.post("/", async (req, res) => {
-    const { userId, content } = req.body;
+  router.post("/", requireAuth, async (req, res) => {
+    const { content } = req.body;
+
+    const userId = req.user.id; // only auth user create posts
 
     const post = await repository.createPost(userId, content);
 
@@ -33,10 +36,12 @@ function registerPostRoutes(app, repository) {
   });
 
   // PATCH /api/posts/:id
-  router.patch("/:id", async (req, res) => {
+  // update your own post only
+  router.patch("/:id", requireAuth, async (req, res) => {
     const { content } = req.body;
 
-    const post = await repository.updatePost(req.params.id, content);
+    const postId = req.params.id;
+    const post = await repository.findById(postId);
 
     if (!post) {
       return res.status(404).json({
@@ -44,12 +49,20 @@ function registerPostRoutes(app, repository) {
       });
     }
 
-    return res.json({ post });
+    // check if post belong to user
+    if (req.user.id !== post.user_id) {
+      return res.status(401).json({ error: "unauthorized" });
+    }
+
+    const updatedPost = await repository.updatePost(req.params.id, content);
+
+    return res.json({ post: updatedPost });
   });
 
   // DELETE /api/posts/:id
-  router.delete("/:id", async (req, res) => {
-    const post = await repository.deletePost(req.params.id);
+  router.delete("/:id", requireAuth, async (req, res) => {
+    const postId = req.params.id;
+    const post = await repository.findById(postId);
 
     if (!post) {
       return res.status(404).json({
@@ -57,7 +70,13 @@ function registerPostRoutes(app, repository) {
       });
     }
 
-    return res.json({ post });
+    if (req.user.id !== post.user_id) {
+      return res.status(401).json({ error: "unauthorized" });
+    }
+
+    const deletedPost = await repository.deletePost(postId);
+
+    return res.json({ post: deletedPost });
   });
 
   app.use("/api/posts", router);

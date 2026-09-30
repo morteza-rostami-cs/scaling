@@ -1,11 +1,14 @@
 import express from "express";
+import requireAuth from "#src/middleware/auth.js";
 
 const router = express.Router();
 
 function registerLikeRoutes(app, repository) {
   // POST /api/posts/:postId/like
-  router.post("/posts/:postId/like", async (req, res) => {
-    const { userId } = req.body;
+  router.post("/posts/:postId/like", requireAuth, async (req, res) => {
+    // const { userId } = req.body;
+
+    const userId = req.user.id;
 
     const like = await repository.createLike(userId, req.params.postId);
 
@@ -13,8 +16,10 @@ function registerLikeRoutes(app, repository) {
   });
 
   // DELETE /api/posts/:postId/like
-  router.delete("/posts/:postId/like", async (req, res) => {
-    const { userId } = req.body;
+  router.delete("/posts/:postId/like", requireAuth, async (req, res) => {
+    // const { userId } = req.body;
+
+    const userId = req.user.id;
 
     const like = await repository.deleteLike(userId, req.params.postId);
 
