@@ -1,11 +1,16 @@
 import express from "express";
 import registerRoutes from "#core";
 import { requestLogger } from "./middleware/requestLogger.js";
+import cookieParser from "cookie-parser";
+
+import { printRoutes } from "#src/utils/printRoutes.js";
 
 const app = express();
 
 // request logger middleware
 app.use(requestLogger);
+// parsing cookies
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -19,5 +24,7 @@ app.get("/api/health", (req, res) => {
 
 // register routes
 registerRoutes(app);
+
+// printRoutes(app);
 
 export default app;

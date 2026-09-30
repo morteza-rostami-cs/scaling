@@ -55,16 +55,15 @@ class UserRepository {
     return result.rows[0] || null;
   }
 
-  async updateUser(id, username, email) {
+  async updateUser(id, username) {
     const result = await this.db.query(
       /*sql*/ `
         UPDATE users
-        SET username = $1,
-            email = $2
-        WHERE id = $3
+        SET username = $1
+        WHERE id = $2
         RETURNING id, username, email, created_at
       `,
-      [username, email, id],
+      [username, id],
     );
     return result.rows[0] || null;
   }

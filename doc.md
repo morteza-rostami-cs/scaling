@@ -15,5 +15,8 @@ sudo -u postgres psql
 
 npm install pg
 
+# auth
+npm install bcrypt cookie-parser
+
 
 ```
