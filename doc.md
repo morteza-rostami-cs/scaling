@@ -39,5 +39,16 @@ npm install bcrypt cookie-parser
 # http status code
 npm install http-status-codes
 
+# seed script
+npm run seed -- users 5
+
+```
+
+```text
+
+curl -c cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"password123"}' \
+  http://localhost:3000/api/auth/registerlkl
 
 ```
