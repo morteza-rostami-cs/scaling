@@ -65,6 +65,46 @@ class FollowRepository {
 
     return result.rows;
   }
+
+  // with transaction
+  async createFollowWithNotification(followerId, followingId) {
+    const client = await this.db.connect();
+
+    try {
+      await client.query("BEGIN");
+
+      // first query
+      const followResult = await client.query(
+        /*sql*/ `
+        INSERT INTO follows (follower_id, following_id)
+        VALUES ($1, $2)
+        RETURNING follower_id, following_id, created_at
+      `,
+        [followerId, followingId],
+      );
+
+      // second query
+      await client.query(
+        /*sql*/ `
+        INSERT INTO notifications (user_id, type, message)
+        VALUES ($1, $2, $3)
+      `,
+        [followingId, "follow", "Someone started following you"],
+      );
+
+      // commit both
+      await client.query("COMMIT");
+
+      return followResult.rows[0] || null;
+    } catch (error) {
+      // if one failed -- rollback both
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      // clear db client
+      client.release();
+    }
+  }
 }
 
 export default FollowRepository;

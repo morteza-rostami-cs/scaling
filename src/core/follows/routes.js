@@ -10,7 +10,13 @@ function registerFollowRoutes(app, repository) {
     const followerId = req.user.id;
     const followingId = req.params.id;
 
-    const follow = await repository.createFollow(followerId, followingId);
+    // const follow = await repository.createFollow(followerId, followingId);
+
+    // transaction: follow and notification
+    const follow = await repository.createFollowWithNotification(
+      followerId,
+      followingId,
+    );
 
     return res.status(httpCode.CREATED).json({ follow });
   });
