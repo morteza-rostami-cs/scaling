@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "#src/middleware/auth.js";
+import { StatusCodes as httpCode } from "http-status-codes";
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ function registerLikeRoutes(app, repository) {
 
     const like = await repository.createLike(userId, req.params.postId);
 
-    return res.status(201).json({ like });
+    return res.status(httpCode.CREATED).json({ like });
   });
 
   // DELETE /api/posts/:postId/like
@@ -24,7 +25,7 @@ function registerLikeRoutes(app, repository) {
     const like = await repository.deleteLike(userId, req.params.postId);
 
     if (!like) {
-      return res.status(404).json({
+      return res.status(httpCode.NOT_FOUND).json({
         error: "Like not found",
       });
     }

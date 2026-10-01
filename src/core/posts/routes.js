@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "#src/middleware/auth.js";
+import { StatusCodes as httpCode } from "http-status-codes";
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ function registerPostRoutes(app, repository) {
 
     const post = await repository.createPost(userId, content);
 
-    return res.status(201).json({ post });
+    return res.status(httpCode.CREATED).json({ post });
   });
 
   // GET /api/posts
@@ -27,7 +28,7 @@ function registerPostRoutes(app, repository) {
     const post = await repository.findById(req.params.id);
 
     if (!post) {
-      return res.status(404).json({
+      return res.status(httpCode.NOT_FOUND).json({
         error: "Post not found",
       });
     }
@@ -44,14 +45,14 @@ function registerPostRoutes(app, repository) {
     const post = await repository.findById(postId);
 
     if (!post) {
-      return res.status(404).json({
+      return res.status(httpCode.NOT_FOUND).json({
         error: "Post not found",
       });
     }
 
     // check if post belong to user
     if (req.user.id !== post.user_id) {
-      return res.status(401).json({ error: "unauthorized" });
+      return res.status(httpCode.UNAUTHORIZED).json({ error: "unauthorized" });
     }
 
     const updatedPost = await repository.updatePost(req.params.id, content);
@@ -65,13 +66,13 @@ function registerPostRoutes(app, repository) {
     const post = await repository.findById(postId);
 
     if (!post) {
-      return res.status(404).json({
+      return res.status(httpCode.NOT_FOUND).json({
         error: "Post not found",
       });
     }
 
     if (req.user.id !== post.user_id) {
-      return res.status(401).json({ error: "unauthorized" });
+      return res.status(httpCode.UNAUTHORIZED).json({ error: "unauthorized" });
     }
 
     const deletedPost = await repository.deletePost(postId);

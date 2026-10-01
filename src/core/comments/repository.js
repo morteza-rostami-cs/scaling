@@ -37,6 +37,25 @@ class CommentRepository {
     return result.rows;
   }
 
+  async findById(id) {
+    const result = await this.db.query(
+      /*sql*/ `
+        SELECT
+          c.id,
+          c.user_id,
+          u.username,
+          c.content,
+          c.created_at
+        FROM comments c
+        JOIN users u ON u.id = c.user_id
+        WHERE c.id = $1
+      `,
+      [id],
+    );
+
+    return result.rows[0] || null;
+  }
+
   async deleteComment(id) {
     const result = await this.db.query(
       /*sql*/ `

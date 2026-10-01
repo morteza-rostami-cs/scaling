@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "#src/middleware/auth.js";
+import { StatusCodes as httpCode } from "http-status-codes";
 
 const router = express.Router();
 
@@ -9,15 +10,9 @@ function registerFollowRoutes(app, repository) {
     const followerId = req.user.id;
     const followingId = req.params.id;
 
-    try {
-      const follow = await repository.createFollow(followerId, followingId);
+    const follow = await repository.createFollow(followerId, followingId);
 
-      return res.status(201).json({ follow });
-    } catch (error) {
-      return res.status(500).json({
-        error: error,
-      });
-    }
+    return res.status(httpCode.CREATED).json({ follow });
   });
 
   // DELETE /api/users/:id/follow
@@ -28,7 +23,7 @@ function registerFollowRoutes(app, repository) {
     const follow = await repository.deleteFollow(followerId, followingId);
 
     if (!follow) {
-      return res.status(404).json({
+      return res.status(httpCode.NOT_FOUND).json({
         error: "Follow not found",
       });
     }

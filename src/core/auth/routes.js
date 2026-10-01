@@ -1,6 +1,9 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { requireAuth, requireGuest } from "#src/middleware/auth.js";
+import settings from "#config/settings.js";
+
+import { StatusCodes as httpCode } from "http-status-codes";
 
 const router = express.Router();
 
@@ -13,7 +16,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     const { email, password } = req.body;
 
     if (!email || !password)
-      return res.status(400).json({
+      return res.status(httpCode.BAD_REQUEST).json({
         error: "missing email or password",
       });
 
@@ -24,7 +27,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
 
     // do not allow register with same email
     if (existingUser) {
-      return res.status(409).json({
+      return res.status(httpCode.CONFLICT).json({
         error: "Email already registered",
       });
     }
@@ -38,14 +41,14 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     // create user
     const user = await userRepository.createUser(username, email, passwordHash);
 
-    return res.status(201).json({ user });
+    return res.status(httpCode.CREATED).json({ user });
   });
 
   router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({
+      return res.status(httpCode.BAD_REQUEST).json({
         error: "missing email or password",
       });
     }
@@ -54,7 +57,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     const user = await userRepository.findByEmail(email);
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(httpCode.UNAUTHORIZED).json({
         error: "invalid email or password",
       });
     }
@@ -64,7 +67,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
 
     // unauthorized
     if (!valid) {
-      return res.status(401).json({
+      return res.status(httpCode.UNAUTHORIZED).json({
         error: "invalid email or password",
       });
     }
@@ -86,7 +89,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
       }, //options
     );
 
-    return res.json({
+    return res.status(httpCode.OK).json({
       user: {
         id: user.id,
         username: user.username,
@@ -95,7 +98,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     });
   });
 
-  router.post("/logout", async (req, res) => {
+  router.post("/logout", requireAuth, async (req, res) => {
     const token = req.cookies.session;
 
     if (token) {
@@ -106,14 +109,15 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     // clear browser cookie
     res.clearCookie("session");
 
-    return res.status(204).json({ message: "logged out" });
+    // 204 -- must not have a body
+    return res.sendStatus(httpCode.NO_CONTENT);
   });
 
   router.get("/me", requireAuth, async (req, res) => {
     const token = req.cookies.session;
 
     if (!token) {
-      return res.status(401).json({
+      return res.status(httpCode.UNAUTHORIZED).json({
         error: "not authenticated",
       });
     }
@@ -121,7 +125,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     const session = await sessionRepository.findByToken(token);
 
     if (!session) {
-      return res.status(401).json({
+      return res.status(httpCode.UNAUTHORIZED).json({
         error: "expired session",
       });
     }
@@ -129,12 +133,12 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     const user = await userRepository.findById(session.user_id);
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(httpCode.UNAUTHORIZED).json({
         error: "user not found",
       });
     }
 
-    return res.json({
+    return res.status(httpCode.OK).json({
       id: user.id,
       username: user.username,
       email: user.email,

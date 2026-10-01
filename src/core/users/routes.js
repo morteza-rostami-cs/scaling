@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "#src/middleware/auth.js";
+import { StatusCodes as httpCode } from "http-status-codes";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ function registerUserRoutes(app, repository) {
     const user = await repository.findById(req.params.id);
 
     if (!user) {
-      return res.status(404).json({
+      return res.status(httpCode.NOT_FOUND).json({
         error: "User not found",
       });
     }
@@ -31,7 +32,7 @@ function registerUserRoutes(app, repository) {
     const { username } = req.body;
 
     if (!username) {
-      return res.status(400).json({
+      return res.status(httpCode.BAD_REQUEST).json({
         error: "username required",
       });
     }
@@ -42,7 +43,7 @@ function registerUserRoutes(app, repository) {
     const user = await repository.updateUser(authUser.id, username);
 
     if (!user) {
-      return res.status(404).json({
+      return res.status(httpCode.NOT_FOUND).json({
         error: "User not found",
       });
     }

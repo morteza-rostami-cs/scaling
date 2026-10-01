@@ -36,5 +36,8 @@ npm install pg
 # auth
 npm install bcrypt cookie-parser
 
+# http status code
+npm install http-status-codes
+
 
 ```
