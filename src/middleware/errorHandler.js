@@ -1,3 +1,5 @@
+import settings from "#config/settings.js";
+
 export function errorHandler(err, req, res, next) {
   //actual error on dev
   console.error("REQUEST ERROR");
@@ -31,7 +33,26 @@ export function errorHandler(err, req, res, next) {
     });
   }
 
-  // Everything else
+  // cover express and json error and so on
+  // they provide status like: 400 and so on
+  if (err.status || err.statusCode) {
+    // get status from this or that
+    const status = err.status ?? err.statusCode;
+
+    let message;
+    // do not show above 500 errors to client -- in production
+    if (status >= 500 && settings.nodeEnv === "production") {
+      message = "Internal server error";
+    } else {
+      message = err.message;
+    }
+
+    return res.status(status).json({
+      error: message,
+    });
+  }
+
+  // Everything else -- for what ever that has not status code
   return res.status(500).json({
     error: "Internal server error",
   });
