@@ -17,7 +17,8 @@
     "db:test:users": "node --env-file=.env src/db/users.js",
     "seed": "node --env-file=.env src/db/seed/index.js",
     "seed:dev": "node --env-file=.env src/db/seed/dev.js",
-    "tree": "tree -a -I 'node_modules|_notes|.git'"
+    "tree": "tree -a -I 'node_modules|_notes|.git'",
+    "test": "node --env-file=.env --test"
   },
   "keywords": [
     "node"

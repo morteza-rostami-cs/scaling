@@ -13,7 +13,6 @@ const generateUsername = (email) =>
 
 function registerAuthRoutes(app, userRepository, sessionRepository) {
   router.post("/register", requireGuest, async (req, res) => {
-    console.log("start register ======");
     const { email, password } = req.body;
 
     if (!email || !password)
