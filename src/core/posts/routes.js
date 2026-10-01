@@ -8,8 +8,21 @@ function registerPostRoutes(app, repository) {
   // POST /api/posts
   router.post("/", requireAuth, async (req, res) => {
     const { content } = req.body;
-
     const userId = req.user.id; // only auth user create posts
+
+    if (typeof content !== "string") {
+      return res.status(httpCode.BAD_REQUEST).json({
+        error: "content must be a string",
+      });
+    }
+
+    // reject empty string
+    // catch: undefined, null, "" and whitespace "  "
+    if (!content || content.trim().length === 0) {
+      return res.status(httpCode.BAD_REQUEST).json({
+        error: "content is required",
+      });
+    }
 
     const post = await repository.createPost(userId, content);
 
