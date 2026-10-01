@@ -42,6 +42,25 @@ npm install http-status-codes
 # seed script
 npm run seed -- users 5
 
+# install k6 -- for load testing
+
+sudo gpg -k
+
+curl -fsSL https://dl.k6.io/key.gpg \
+  | sudo gpg --dearmor \
+  -o /usr/share/keyrings/k6-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+  | sudo tee /etc/apt/sources.list.d/k6.list
+
+sudo apt-get update
+
+sudo apt-get install k6
+
+k6 version
+
+
+
 ```
 
 ```bash
