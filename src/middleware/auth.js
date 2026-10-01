@@ -11,6 +11,7 @@ export async function requireAuth(req, res, next) {
   }
 
   // get the session by token
+  // does not return expired session
   const session = await sessionRepository.findByToken(token);
 
   if (!session) {
@@ -34,11 +35,14 @@ export async function requireAuth(req, res, next) {
   next();
 }
 
-export function requireGuest(req, res, next) {
+export async function requireGuest(req, res, next) {
   const token = req.cookies.session;
 
+  // just checking if token is not fake
+  const session = await sessionRepository.findByToken(token);
+
   // return if token exist
-  if (token) {
+  if (token && session) {
     return res.status(403).json({
       error: "already authenticated",
     });

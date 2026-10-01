@@ -13,6 +13,7 @@ const generateUsername = (email) =>
 
 function registerAuthRoutes(app, userRepository, sessionRepository) {
   router.post("/register", requireGuest, async (req, res) => {
+    console.log("start register ======");
     const { email, password } = req.body;
 
     if (!email || !password)
@@ -44,7 +45,7 @@ function registerAuthRoutes(app, userRepository, sessionRepository) {
     return res.status(httpCode.CREATED).json({ user });
   });
 
-  router.post("/login", async (req, res) => {
+  router.post("/login", requireGuest, async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {

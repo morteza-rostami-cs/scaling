@@ -82,4 +82,9 @@ PRIMARY KEY (follower_id, following_id),
 
 # can not follow himself
 CHECK (follower_id <> following_id)
+
+# also this
+  PRIMARY KEY (user_id, post_id)
+  prevents concurrent likes -- without this if they send 10 user_id, post_id -- at the same time -- we like the post 10 time -- so js test is not enough
+
 */
