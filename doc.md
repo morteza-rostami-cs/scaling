@@ -254,6 +254,170 @@ wait
 
 ```text
 
+#=================================
+# monitoring:
+#=================================
+
+prometheus --version
+
+# link
+https://prometheus.io/download/?utm_source=chatgpt.com
+
+# download this
+Linux
+amd64
+prometheus-<version>.linux-amd64.tar.gz
+
+tar xvf prometheus-3.15.0.linux-amd64.tar.gz
+
+# copy to home
+cp -r ~/Downloads/prometheus-3.15.0.linux-amd64 ~/prometheus
+
+cd prometheus-3.15.0.linux-amd64/
+
+prometheus
+prometheus.yml
+
+prometheus is the actual server.
+
+prometheus.yml is its configuration.
+
+#=========
+
+# start prometheus
+
+./prometheus --config.file=prometheus.yml
+
+# prometheus web interface
+http://localhost:9090
+
+# open config file
+code prometheus.yml
+
+#=========
+
+# install grafana
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https wget gnupg
+
+sudo mkdir -p /etc/apt/keyrings
+
+sudo wget -O /etc/apt/keyrings/grafana.asc https://apt.grafana.com/gpg-full.key
+
+sudo chmod 644 /etc/apt/keyrings/grafana.asc
+
+echo "deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+
+sudo apt-get update
+
+# install grafana
+sudo apt-get install grafana
+
+sudo systemctl start grafana-server
+sudo systemctl status grafana-server
+
+# find web view
+sudo cat /etc/grafana/grafana.ini > grafana.txt
+
+# change port
+sudo nano /etc/grafana/grafana.ini
+;http_port = 3000
+
+# restart the file
+sudo systemctl restart grafana-server
+
+sudo systemctl status grafana-server
+sudo ss -tlnp | grep 3001
+
+# grafana web view
+http://localhost:3001
+
+# username: admin
+# password: admin or love
+
+#=========
+
+# install prometheus plugin on grafana: (iran method)
+
+# download it from here
+https://azureserv.com/grafana/plugins/prometheus/installation/?platform=linux-arm64&__cpo=aHR0cHM6Ly9ncmFmYW5hLmNvbQ
+
+# download the first one  with -- _Linux only!
+  - not the ones with ARM
+  - also not the second _Linux
+
+# extract and copy it to grafana/plugins
+sudo cp -r ~/Downloads/prometheus /var/lib/grafana/plugins/
+
+# set ownership
+sudo chown -R grafana:grafana /var/lib/grafana/plugins/prometheus
+sudo chown -R grafana:grafana /var/lib/grafana/plugins/prometheus
+sudo chmod -R 755 /var/lib/grafana/plugins/prometheus
+
+sudo systemctl restart grafana-server
+
+sudo systemctl status grafana-server
+
+#==============================
+## allow unsigned plugins:
+
+sudo chown apax:apax /etc/grafana/grafana.ini
+#sudo nano /etc/grafana/grafana.ini
+sudo code --no-sandbox --user-data-dir=/tmp/vscode-root /etc/grafana/grafana.ini
+
+[plugins]
+allow_loading_unsigned_plugins = prometheus
+
+sudo systemctl restart grafana-server
+
+#====================================
+
+## i downloaded the wrong file:
+
+sudo rm -rf /var/lib/grafana/plugins/prometheus
+sudo systemctl restart grafana-server
+
+
+
+
+#=========
+#=========
+#=========
+#=========
+#=========
+#=========
+
+```
+
+```bash
+
+# prometheus for node
+npm install prom-client
+
+# create a metric module
+src/monitoring/metrics.js
+
+# expose a node endpoint /metrics
+
+# then open prometheus config
+code /home/apax/prometheus/prometheus.yml
+
+# add a new node job -- under scrape_configs
+
+# then restart
+sudo systemctl restart prometheus
+# or if not a systemd
+./prometheus --config.file=prometheus.yml
+
+# now you can query things in prometheus
+process_resident_memory_bytes
+process_cpu_user_seconds_total
+
+```
+
+```text
+
 # can not follow the same person twice
 PRIMARY KEY (follower_id, following_id),
 

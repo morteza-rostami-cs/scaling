@@ -3,6 +3,7 @@ import registerRoutes from "#core";
 import { requestLogger } from "./middleware/requestLogger.js";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { register } from "./monitoring/metrics.js";
 
 // import { printRoutes } from "#src/utils/printRoutes.js";
 
@@ -21,6 +22,12 @@ app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
   });
+});
+
+// prometheus node js metrics
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", register.contentType);
+  res.end(await register.metrics());
 });
 
 // register routes
